@@ -3,7 +3,8 @@
 namespace Swiftmade\Blogdown;
 
 use Carbon\Carbon;
-use Michelf\MarkdownExtra;
+use Parsedown;
+use ParsedownExtra;
 
 class Parser
 {
@@ -62,7 +63,8 @@ class Parser
     public function html()
     {
         $markdown = preg_replace('/\/\*(.+?)\*\//ms', '', $this->content);
-        $html = MarkdownExtra::defaultTransform($markdown);
+        $html = new ParsedownExtra;
+        $html->text($markdown);
         // TODO: Move this to a custom modifier.
         $html = str_replace('<table>', '<table class="table table-bordered">', $html);
         return $html;
