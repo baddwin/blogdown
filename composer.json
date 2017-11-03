@@ -8,7 +8,7 @@
         }
     ],
     "license": "MIT",
-    "minimum-stability": "dev-fork",
+    "minimum-stability": "dev",
     "prefer-stable" : false,
     "require": {
         "laravel/framework": "5.*",
