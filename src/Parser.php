@@ -64,9 +64,8 @@ class Parser
     {
         $markdown = preg_replace('/\/\*(.+?)\*\//ms', '', $this->content);
         $html = new ParsedownExtra;
-        $html->text($markdown);
         // TODO: Move this to a custom modifier.
-        $html = str_replace('<table>', '<table class="table table-bordered">', $html);
+        $html = str_replace('<table>', '<table class="table table-bordered">', $html->text($markdown));
         return $html;
     }
 }
