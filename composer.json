@@ -8,7 +8,8 @@
         }
     ],
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev-fork",
+    "prefer-stable" : false,
     "require": {
         "laravel/framework": "5.*",
         "michelf/php-markdown": "^1.7",
