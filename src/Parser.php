@@ -5,6 +5,7 @@ namespace Swiftmade\Blogdown;
 use Carbon\Carbon;
 use Parsedown;
 use ParsedownExtra;
+use Symfony\Component\Yaml\Yaml;
 
 class Parser
 {
@@ -21,10 +22,40 @@ class Parser
     {
         $parser = (new self($path));
         $blog = new \stdClass();
-        $blog->meta = $parser->meta();
+        try {
+            $blog->meta = $parser->meta();
+        } catch (\Exception $e) {
+            try {
+                $blog->meta = $parser->yaml();
+            } catch (\Exception $e) {
+                $blog->meta = [];
+                echo $e;
+            };
+        };
         $blog->html = $parser->html();
         $blog->hash = md5_file($path);
         return $blog;
+    }
+
+    /**
+     * Yaml parser with Symfony Component
+     *
+     * @return object
+     */
+    public function yaml()
+    {
+        if (!preg_match('/^-{3,}\n?(.*?)\n-{3,}/ms', $this->content, $matches)) {
+            throw new \Exception('Not a yaml front matter we want. Abort caching.');
+        }
+        $meta = new \stdClass();
+        $yaml = new Yaml();
+        $meta = (object)$yaml->parse($matches[1]);
+        if(property_exists($meta, 'date')) {
+            $meta->date = Carbon::createFromTimestamp($meta->date);
+        }
+        $meta->path = $this->path;
+
+        return $meta;
     }
 
     public function meta()
@@ -62,7 +93,11 @@ class Parser
 
     public function html()
     {
-        $markdown = preg_replace('/\/\*(.+?)\*\//ms', '', $this->content);
+        if(preg_match('#/\*#', $this->content, $matches)) {
+            $markdown = preg_replace('/\/\*(.+?)\*\//ms', '', $this->content);
+        } else {
+            $markdown = preg_replace('/^-{3,}\n(.*?)\n-{3,}$/ms', '', $this->content);
+        }
         $html = new ParsedownExtra;
         // TODO: Move this to a custom modifier.
         $html = str_replace('<table>', '<table class="table table-bordered">', $html->text($markdown));
