@@ -49,9 +49,9 @@ class Parser
         }
         $meta = new \stdClass();
         $yaml = new Yaml();
-        $meta = (object)$yaml->parse($matches[1]);
+        $meta = (object)$yaml->parse($matches[1], Yaml::PARSE_DATETIME);
         if(property_exists($meta, 'date')) {
-            $meta->date = Carbon::createFromTimestamp($meta->date);
+            $meta->date = Carbon::createFromFormat(config('blogdown.date_format'),$meta->date);
         }
         $meta->path = $this->path;
 
