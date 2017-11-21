@@ -97,7 +97,7 @@ class Parser
 
     public function html()
     {
-        if(preg_match('#/\*#', $this->content, $matches)) {
+        if(preg_match('!^/\*!', $this->content, $matches)) {
             $markdown = preg_replace('/\/\*(.+?)\*\//ms', '', $this->content);
         } else {
             $markdown = preg_replace('/^-{3,}\n(.*?)\n-{3,}$/ms', '', $this->content);
