@@ -44,6 +44,28 @@ class Presenter
             ->take($take);
     }
 
+    public function category($categories, $take = 10)
+    {
+        return $this->repository->all()
+            ->filter(function($value) use ($categories){
+                if (in_array(strtolower($categories), array_map('strtolower',$value->meta->categories))) {
+                    return $value;
+                }
+            })
+            ->take($take);
+    }
+
+    public function tag($tags, $take = 10)
+    {
+        return $this->repository->all()
+            ->filter(function($value) use ($tags){
+                if (in_array(strtolower($tags), array_map('strtolower',$value->meta->tags))) {
+                    return $value;
+                }
+            })
+            ->take($take);
+    }
+
     protected function isModified($blog)
     {
         return md5_file($blog->meta->path) !== $blog->hash;
