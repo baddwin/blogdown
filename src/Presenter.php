@@ -28,10 +28,10 @@ class Presenter
 
     public function recent($take = 10)
     {
-        return $this->repository->all()
-            ->sortByDesc('meta.date')
-            ->whereStrict('meta.draft','false')
-            ->take($take);
+        return $this->repository->chunk($take);
+            //->sortByDesc('meta.date')
+            //->whereStrict('meta.draft','false')
+            //->take($take);
     }
 
     public function others($slug, $take = 5)
